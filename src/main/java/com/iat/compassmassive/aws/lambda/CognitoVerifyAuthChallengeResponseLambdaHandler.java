@@ -27,7 +27,7 @@ public class CognitoVerifyAuthChallengeResponseLambdaHandler implements RequestH
 
         try {
             String expectedAnswer = ((Map<String, Object>) request.get("privateChallengeParameters")).get("ANSWER").toString();
-            if (request.get("challengeAnswer").toString().equals(expectedAnswer)) {
+            if (request.get("challengeAnswer").toString().equals(AES.decrypt(expectedAnswer))) {
                 response.put("answerCorrect", true);
             } else {
                 response.put("answerCorrect", false);
@@ -38,3 +38,4 @@ public class CognitoVerifyAuthChallengeResponseLambdaHandler implements RequestH
         return event;
     }
 }
+
