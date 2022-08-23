@@ -9,6 +9,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -27,8 +28,8 @@ public class CognitoVerifyAuthChallengeResponseLambdaHandler implements RequestH
 
         try {
             String expectedAnswer = ((Map<String, Object>) request.get("privateChallengeParameters")).get("ANSWER").toString();
-            String decodedCode = expectedAnswer.replace('*', '/');
-            if (request.get("challengeAnswer").toString().equals(AES.decrypt(decodedCode))) {
+            String decodedAnswer = URLDecoder.decode(expectedAnswer, "UTF-8");
+            if (request.get("challengeAnswer").toString().equals(AES.decrypt(decodedAnswer))) {
                 response.put("answerCorrect", true);
             } else {
                 response.put("answerCorrect", false);
