@@ -24,7 +24,7 @@ public class CognitoVerifyAuthChallengeResponseLambdaHandler implements RequestH
             String expectedAnswer = ((Map<String, Object>) request.get("privateChallengeParameters")).get("ANSWER").toString();
             String decodedAnswer = new String(Base64.getUrlDecoder().decode(expectedAnswer));
             //String decodedAnswer = URLDecoder.decode(request.get("challengeAnswer").toString(), "UTF-8");
-            if (expectedAnswer.equals(AES.decrypt(decodedAnswer))) {
+            if (expectedAnswer.equals(decodedAnswer)) {
                 response.put("answerCorrect", true);
             } else {
                 response.put("answerCorrect", false);
