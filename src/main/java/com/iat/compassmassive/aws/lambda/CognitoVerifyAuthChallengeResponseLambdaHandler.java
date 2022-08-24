@@ -5,13 +5,7 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Map;
 
 public class CognitoVerifyAuthChallengeResponseLambdaHandler implements RequestHandler<Map<String, Object>, Map<String, Object>> {
@@ -28,7 +22,8 @@ public class CognitoVerifyAuthChallengeResponseLambdaHandler implements RequestH
 
         try {
             String expectedAnswer = ((Map<String, Object>) request.get("privateChallengeParameters")).get("ANSWER").toString();
-            String decodedAnswer = URLDecoder.decode(request.get("challengeAnswer").toString(), "UTF-8");
+            String decodedAnswer = new String(Base64.getUrlDecoder().decode(expectedAnswer));
+            //String decodedAnswer = URLDecoder.decode(request.get("challengeAnswer").toString(), "UTF-8");
             if (expectedAnswer.equals(AES.decrypt(decodedAnswer))) {
                 response.put("answerCorrect", true);
             } else {
